@@ -129,23 +129,38 @@ try{
 
 });
 
-const timeafk = 10000
+
 setInterval(async ()=>{
-  console.log("interval")
-  const timenow = Date.now()
-  const newtimeafk = timenow - timeafk
-  try{
-    const usersafk = await colectionpaticipants.find({lastStatus: newtimeafk}).toArray( )
+console.log("inteval")
+const dateafktime = Date.now() - 10000
 
-  }catch(err){
-    res.status(500).send("erro ao remover usuarios afk")
-  }
+try{
+const afkusers = await colectionpaticipants.find({lastStatus: {$lte: dateafktime}}).toArray();
 
-},15000)
+if (afkusers){
+  const arrayuserafk = afkusers.map((u)=>{
+     return{
+      from: u.name,
+      to: "Todos",
+      text: "sai da sala...",
+      type: "status",
+      time: dayjs().format("HH:mm:ss"),
+     } 
+
+     X
+
+  })
+  console.log(arrayuserafk)
+}
 
 
 
 
+}catch(err){
+  console.log("erro na remoção dos usuarios afk")
+}
+
+}, 15000)
 
 
 app.listen(PORT, () => {
