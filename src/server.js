@@ -129,6 +129,25 @@ try{
 
 });
 
+const timeafk = 10000
+setInterval(async ()=>{
+  console.log("interval")
+  const timenow = Date.now()
+  const newtimeafk = timenow - timeafk
+  try{
+    const usersafk = await colectionpaticipants.find({lastStatus: newtimeafk}).toArray( )
+
+  }catch(err){
+    res.status(500).send("erro ao remover usuarios afk")
+  }
+
+},15000)
+
+
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Server iniciado na porta ${PORT}`);
 });
