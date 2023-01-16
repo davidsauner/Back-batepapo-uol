@@ -86,7 +86,20 @@ app.post("/messages", async (req, res) => {
   }
   res.status(201).send("mensagem enviada");
 });
-app.post("/status", async (req, res) => {});
+app.post("/status", async (req, res) => {
+  const {user} = req.headers;
+  try {
+    const userlogin = await colectionpaticipants.findOne({name: user,})
+
+    if (!userlogin){
+      return res.send("usuario desconectado")
+    }
+    await colectionpaticipants.updateOne({name: user},
+      {$set:{lastStatus:Date.now() }})
+      res.status(200).send("usuario atualizado")
+  }catch(err) {}
+
+});
 app.get("/participants", async (req, res) => {
   try {
     const participants = await colectionpaticipants.find().toArray();
