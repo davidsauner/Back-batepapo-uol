@@ -38,7 +38,7 @@ app.post("/participants", async (req, res) => {
     { abortEarly: false }
   );
   if (error) {
-    return res.status(402).send("erro na validação do usuario");
+    return res.status(422).send("erro na validação do usuario");
   }
 
   try {
@@ -48,8 +48,8 @@ app.post("/participants", async (req, res) => {
       return res.status(409).send("nome de usuario ja cadastrado!");
     }
   } catch (err) {
-    console.log("erro na verificação do usuario...", err);
-    res.sendStatus(509);
+    console.log(err);
+    res.sendStatus(500);
   }
 
   await colectionparticipants
@@ -62,7 +62,7 @@ app.post("/participants", async (req, res) => {
     type: "status",
     time: dayjs().format("HH:mm:ss"),
   });
-  res.status(202).send("Usuario criado");
+  res.sendStatus(201);
 });
 app.post("/messages", async (req, res) => {
   const { to, text, type } = req.body;
@@ -80,14 +80,15 @@ app.post("/messages", async (req, res) => {
       abortEarly: false,
     });
     if (error) {
-      return res.status(402).send("erro na na mensagem");
+      return res.status(422).send("erro na na mensagem");
     }
 
     await colectionmessages.insertOne(message);
   } catch (err) {
-    res.status(500).send("erro post message");
+    console.log(err);
+    res.sendStatus(500)
   }
-  res.status(201).send("mensagem enviada");
+  res.sendStatus(201)
 });
 app.post("/status", async (req, res) => {
   const {user} = req.headers;
@@ -96,12 +97,12 @@ app.post("/status", async (req, res) => {
     .findOne({name: user,})
 
     if (!userlogin){
-      return res.send("usuario desconectado")
+      return res.sendStatus(404);
     }
     await colectionparticipants
     .updateOne({name: user},
       {$set:{lastStatus:Date.now() }})
-      res.status(200).send("usuario atualizado")
+      res.sendStatus(200)
   }catch(err) {}
 
 });
@@ -154,7 +155,6 @@ if (afkusers){
       time: dayjs().format("HH:mm:ss"),
      } 
 
-     X
 
   })
   await colectionmessages.insertMany(arrayuserafk)
