@@ -65,7 +65,16 @@ app.post("/messages", async (req, res) => {
 
 })
 app.post("/status", async (req, res) => {})
-app.get("/participants", async (req, res) => {})
+app.get("/participants", async (req, res) => {
+  try{
+    const participants = await colectionpaticipants.find().toArray()
+    res.send(participants)
+  }catch(err){
+    res.status(500).send("erro ao enviar os usuarios" ,err)
+  }
+
+
+})
 app.get("/messages", async (req, res) => {})
 
 
