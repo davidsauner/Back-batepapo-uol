@@ -79,8 +79,8 @@ app.post("/messages", async (req, res) => {
     const { error } = messagesValidation.validate(message, {
       abortEarly: false,
     });
-    if (error) {
-      return res.sendStatus(422);
+    if (error||!user) {
+      return res.sendStatus(422)
     }
 
     await colectionmessages.insertOne(message);
@@ -126,9 +126,7 @@ try{
       {type: "message"},
     ],}
   ).limit(limit).toArray();
-  if (messages.length === 0) {
-    return res.sendStatus(422);
-  }
+
 
   res.send(messsages)
 }catch(err){
