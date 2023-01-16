@@ -95,7 +95,26 @@ app.get("/participants", async (req, res) => {
     res.status(500).send("erro ao enviar os usuarios", err);
   }
 });
-app.get("/messages", async (req, res) => {});
+app.get("/messages", async (req, res) => {
+const {user} = req.headers;
+
+try{
+  const messsages = await colectionmessages.find(
+    {$or: [
+      { from: user},
+      { to: user},
+      {type: "message"},
+    ],}
+  ).toArray();
+
+
+  res.send(messsages)
+}catch(err){
+  res.status(500).send("erro ao receber mensagem")
+}
+
+
+});
 
 app.listen(PORT, () => {
   console.log(`Server iniciado na porta ${PORT}`);
