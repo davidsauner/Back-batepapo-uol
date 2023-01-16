@@ -102,7 +102,7 @@ try{
   const messsages = await colectionmessages.find(
     {$or: [
       { from: user},
-      { to: user},
+      { to: {$in: [user,"Todos"]}},
       {type: "message"},
     ],}
   ).toArray();
