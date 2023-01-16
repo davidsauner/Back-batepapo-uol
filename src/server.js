@@ -79,8 +79,8 @@ app.post("/messages", async (req, res) => {
     const { error } = messagesValidation.validate(message, {
       abortEarly: false,
     });
-    if (error||!user) {
-      return res.sendStatus(422)
+    if (error) {
+      return res.status(422).send("erro na mensagem");
     }
 
     await colectionmessages.insertOne(message);
@@ -117,7 +117,7 @@ app.get("/participants", async (req, res) => {
 });
 app.get("/messages", async (req, res) => {
 const {user} = req.headers;
-const {limit} = Number(req.query.limit);
+
 try{
   const messsages = await colectionmessages.find(
     {$or: [
@@ -125,10 +125,10 @@ try{
       { to: {$in: [user,"Todos"]}},
       {type: "message"},
     ],}
-  ).limit(limit).toArray();
+  ).toArray();
 
 
-  res.status(200).send(messsages)
+  res.send(messsages)
 }catch(err){
   res.status(500).send("erro ao receber mensagem")
 }
