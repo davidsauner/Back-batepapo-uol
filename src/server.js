@@ -58,7 +58,7 @@ app.post("/participants", async (req, res) => {
   await colectionmessages.insertOne({
     from: name,
     to: "Todos",
-    text: "entrou na sala",
+    text: "entra na sala...",
     type: "status",
     time: dayjs().format("HH:mm:ss"),
   });
@@ -80,7 +80,7 @@ app.post("/messages", async (req, res) => {
       abortEarly: false,
     });
     if (error) {
-      return res.status(422).send("erro na na mensagem");
+      return res.sendStatus(422);
     }
 
     await colectionmessages.insertOne(message);
@@ -117,7 +117,7 @@ app.get("/participants", async (req, res) => {
 });
 app.get("/messages", async (req, res) => {
 const {user} = req.headers;
-
+const limit = Number(req.query.limit);
 try{
   const messsages = await colectionmessages.find(
     {$or: [
@@ -125,8 +125,10 @@ try{
       { to: {$in: [user,"Todos"]}},
       {type: "message"},
     ],}
-  ).toArray();
-
+  ).limit(limit).toArray();
+  if (messages.length === 0) {
+    return res.sendStatus(422);
+  }
 
   res.send(messsages)
 }catch(err){
