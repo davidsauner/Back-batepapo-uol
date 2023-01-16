@@ -13,6 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3"
+    "dayjs": "^1.11.7",
+    "dotenv": "^16.0.3",
+    "joi": "^17.7.0",
+    "mongodb": "^4.13.0"
   }
 }
