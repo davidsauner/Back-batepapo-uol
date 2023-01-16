@@ -27,7 +27,8 @@ try {
 } catch (err) {}
 
 const db = mongoClient.db("batepapouol");
-const colectionpaticipants = db.collection("participants");
+const colectionparticipants
+ = db.collection("participants");
 const colectionmessages = db.collection("messages");
 
 app.post("/participants", async (req, res) => {
@@ -41,7 +42,8 @@ app.post("/participants", async (req, res) => {
   }
 
   try {
-    const participantislogin = await colectionpaticipants.findOne({ name });
+    const participantislogin = await colectionparticipants
+    .findOne({ name });
     if (participantislogin) {
       return res.status(409).send("nome de usuario ja cadastrado!");
     }
@@ -50,7 +52,8 @@ app.post("/participants", async (req, res) => {
     res.sendStatus(509);
   }
 
-  await colectionpaticipants.insertOne({ name, lastStatus: Date.now() });
+  await colectionparticipants
+  .insertOne({ name, lastStatus: Date.now() });
 
   await colectionmessages.insertOne({
     from: name,
@@ -89,12 +92,14 @@ app.post("/messages", async (req, res) => {
 app.post("/status", async (req, res) => {
   const {user} = req.headers;
   try {
-    const userlogin = await colectionpaticipants.findOne({name: user,})
+    const userlogin = await colectionparticipants
+    .findOne({name: user,})
 
     if (!userlogin){
       return res.send("usuario desconectado")
     }
-    await colectionpaticipants.updateOne({name: user},
+    await colectionparticipants
+    .updateOne({name: user},
       {$set:{lastStatus:Date.now() }})
       res.status(200).send("usuario atualizado")
   }catch(err) {}
@@ -102,7 +107,8 @@ app.post("/status", async (req, res) => {
 });
 app.get("/participants", async (req, res) => {
   try {
-    const participants = await colectionpaticipants.find().toArray();
+    const participants = await colectionparticipants
+    .find().toArray();
     res.send(participants);
   } catch (err) {
     res.status(500).send("erro ao enviar os usuarios", err);
@@ -135,7 +141,8 @@ console.log("inteval")
 const dateafktime = Date.now() - 10000
 
 try{
-const afkusers = await colectionpaticipants.find({lastStatus: {$lte: dateafktime}}).toArray();
+const afkusers = await colectionparticipants
+.find({lastStatus: {$lte: dateafktime}}).toArray();
 
 if (afkusers){
   const arrayuserafk = afkusers.map((u)=>{
@@ -150,7 +157,9 @@ if (afkusers){
      X
 
   })
-  console.log(arrayuserafk)
+  await colectionmessages.insertMany(arrayuserafk)
+  await colectionparticipants.deleteMany({lastStatus: {$lte: dateafktime}})
+
 }
 
 
