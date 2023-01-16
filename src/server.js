@@ -35,15 +35,25 @@ app.post("/participants", async (req, res) => {
     return res.status(402).send(error)
   }
 
-  const participantislogin = colectionpaticipants.find((participant) => participant.name === name)
+  try{
+    const participantislogin = await colectionpaticipants.findOne({name})
   if(participantislogin){
     return res.status(409).send("nome de usuario ja cadastrado!")
-  }
+  
 
-  await colectionpaticipants.insertOne({name})
+  }
+  }catch(err){
+    console.log("erro ao veririfcar nome do usuario", err)
+    res.sendStatus(509)
+  }
+  
+
+  await colectionpaticipants.insertOne({name, lastStatus: Date.now()})
 
 })
-app.post("/messages", async (req, res) => {})
+app.post("/messages", async (req, res) => {
+
+})
 app.post("/status", async (req, res) => {})
 app.get("/participants", async (req, res) => {})
 app.get("/messages", async (req, res) => {})
