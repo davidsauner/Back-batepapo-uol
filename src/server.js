@@ -74,8 +74,11 @@ app.post("/messages", async (req, res) => {
     type,
     time: dayjs().format("HH:mm:ss"),
   };
-
+  const userlogin = await colectionparticipants
+    .findOne({name: user,})
   try {
+    if(!userlogin) return res.sendStatus(422)
+    
     const { error } = messagesValidation.validate(message, {
       abortEarly: false,
     });
@@ -117,6 +120,12 @@ app.get("/participants", async (req, res) => {
 });
 app.get("/messages", async (req, res) => {
 const {user} = req.headers;
+const limit = Number(req.query.limit);
+
+if (limit != number || limit < 0) return res.sendStatus(422)
+  
+
+
 
 try{
   const messsages = await colectionmessages.find(
@@ -125,7 +134,7 @@ try{
       { to: {$in: [user,"Todos"]}},
       {type: "message"},
     ],}
-  ).toArray();
+  ).limit(limit).toArray();
 
 
   res.send(messsages)
