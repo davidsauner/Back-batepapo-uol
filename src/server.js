@@ -117,7 +117,7 @@ app.get("/participants", async (req, res) => {
 });
 app.get("/messages", async (req, res) => {
 const {user} = req.headers;
-const limit = Number(req.query.limit);
+const {limit} = Number(req.query.limit);
 try{
   const messsages = await colectionmessages.find(
     {$or: [
@@ -128,7 +128,7 @@ try{
   ).limit(limit).toArray();
 
 
-  res.send(messsages)
+  res.status(200).send(messsages)
 }catch(err){
   res.status(500).send("erro ao receber mensagem")
 }
