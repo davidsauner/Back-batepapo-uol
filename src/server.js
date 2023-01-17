@@ -123,7 +123,7 @@ const {user} = req.headers;
 const {limit} = req.query;
 
 
-  if(limit <= 0 || isNaN(limit)) return res.sendStatus(422);
+if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
 
 
 
