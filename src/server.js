@@ -120,10 +120,10 @@ app.get("/participants", async (req, res) => {
 });
 app.get("/messages", async (req, res) => {
 const {user} = req.headers;
-const limit = Number(req.query.limit);
+const limit = req.query.limit;
 
-if (limit != number || limit < 0) return res.sendStatus(422)
-  
+
+  if(limit <= 0 ||isNaN(limit)) return res.sendStatus(422);
 
 
 
@@ -134,7 +134,7 @@ try{
       { to: {$in: [user,"Todos"]}},
       {type: "message"},
     ],}
-  ).limit(limit).toArray();
+  ).limit(Number(limit)).toArray();
 
 
   res.send(messsages)
