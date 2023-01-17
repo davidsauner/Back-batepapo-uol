@@ -156,7 +156,7 @@ app.get("/messages", async (req, res) => {
         { to: { $in: [user, "Todos"] } },
         { type: "message" }
       ]
-    }).reverse().slice(0,limit)
+    }).toArray()
 
     res.send(messages)
 
