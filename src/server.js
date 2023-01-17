@@ -146,20 +146,17 @@ app.get("/participants", async (req, res) => {
 // });
 app.get("/messages", async (req, res) => {
   const { user } = req.headers
-  const limit = req.query.limit
-
- 
-
+  const limit = Number(req.query.limit)
   try {
-    // if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
-    // .limit(Number(limit))
+     if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
+     
     const messages = await db.collection("messages").find({
       $or: [
         { from: user },
         { to: { $in: [user, "Todos"] } },
         { type: "message" }
       ]
-    }).toArray()
+    }).limit(limit).toArray()
 
     res.send(messages)
 
