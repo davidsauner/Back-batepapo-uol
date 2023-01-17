@@ -2,7 +2,7 @@ const PORT = 5000;
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import joi from "joi";
+import joi, { number } from "joi";
 import dayjs from "dayjs";
 import { MongoClient } from "mongodb";
 dotenv.config();
@@ -118,38 +118,11 @@ app.get("/participants", async (req, res) => {
     res.status(500).send("erro ao enviar os usuarios", err);
   }
 });
-// app.get("/messages", async (req, res) => {
-// const {user} = req.headers;
-// const limit = req.query.limit;
-
-
-// if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
-
-
-
-// try{
-//   const messsages = await colectionmessages.find(
-//     {$or: [
-//       { from: user},
-//       { to: {$in: [user,"Todos"]}},
-//       {type: "message"},
-//     ],}
-//   ).limit(Number(limit)).toArray();
-
-
-//   res.send(messsages)
-// }catch(err){
-//   res.status(500).send("erro ao receber mensagem")
-// }
-
-
-// });
 app.get("/messages", async (req, res) => {
   const { user } = req.headers
   const limit = parseInt(req.query.limit)
   try {
-    //  if (!limit || limit <= 0) return res.sendStatus(422)
-    // .limit(limit)
+     if (typeof(limit) != number || limit <= 0) return res.sendStatus(422)
     const messages = await db.collection("messages").find({
       $or: [
         { from: user },
