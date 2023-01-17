@@ -118,32 +118,58 @@ app.get("/participants", async (req, res) => {
     res.status(500).send("erro ao enviar os usuarios", err);
   }
 });
+// app.get("/messages", async (req, res) => {
+// const {user} = req.headers;
+// const limit = req.query.limit;
+
+
+// if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
+
+
+
+// try{
+//   const messsages = await colectionmessages.find(
+//     {$or: [
+//       { from: user},
+//       { to: {$in: [user,"Todos"]}},
+//       {type: "message"},
+//     ],}
+//   ).limit(Number(limit)).toArray();
+
+
+//   res.send(messsages)
+// }catch(err){
+//   res.status(500).send("erro ao receber mensagem")
+// }
+
+
+// });
 app.get("/messages", async (req, res) => {
-const {user} = req.headers;
-const limit = req.query.limit;
+  const { user } = req.headers
+  const limit = req.query.limit
+
+  if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
+
+  try {
+
+    const messages = await db.collection("messages").find({
+      $or: [
+        { from: user },
+        { to: { $in: [user, "Todos"] } },
+        { type: "message" }
+      ]
+    }).limit(Number(limit)).toArray()
+
+    res.send(messages)
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).send("Zicou bonito o servidor!!")
+  }
+})
 
 
-if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
 
-
-
-try{
-  const messsages = await colectionmessages.find(
-    {$or: [
-      { from: user},
-      { to: {$in: [user,"Todos"]}},
-      {type: "message"},
-    ],}
-  ).limit(Number(limit)).toArray();
-
-
-  res.send(messsages)
-}catch(err){
-  res.status(500).send("erro ao receber mensagem")
-}
-
-
-});
 
 
 setInterval(async ()=>{
