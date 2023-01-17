@@ -120,7 +120,7 @@ app.get("/participants", async (req, res) => {
 });
 app.get("/messages", async (req, res) => {
 const {user} = req.headers;
-const {limit} = req.query;
+const limit = req.query.limit;
 
 
 if (isNaN(limit) && limit || parseInt(limit) <= 0) return res.sendStatus(422)
