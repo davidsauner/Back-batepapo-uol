@@ -2,7 +2,7 @@ const PORT = 5000;
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import joi, { number } from "joi";
+import joi from "joi";
 import dayjs from "dayjs";
 import { MongoClient } from "mongodb";
 dotenv.config();
