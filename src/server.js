@@ -121,6 +121,7 @@ app.get("/participants", async (req, res) => {
 app.get("/messages", async (req, res) => {
   const { user } = req.headers
   const limit = parseInt(req.query.limit)
+  if(typeof limit != "number"||limit <= 0) res.status(422).send("caiu no if do limit")
   try {
     const messages = await db.collection("messages").find({
       $or: [
@@ -128,10 +129,9 @@ app.get("/messages", async (req, res) => {
         { to: { $in: [user, "Todos"] } },
         { type: "message" }
       ]
-    }).toArray()
-
-    res.send(messages)
-
+    }).limit(limit).toArray();
+    console.log(messages)
+    res.send(messages.reverse())
   } catch (error) {
     console.error(error)
     res.status(500).send("Zicou bonito o servidor!!")
